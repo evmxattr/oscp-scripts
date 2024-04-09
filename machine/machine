@@ -33,6 +33,10 @@ touch passwords.txt
 touch ntlm.txt
 touch user_ntlm.txt
 touch user_pass.txt
+touch hashes.txt
+
+# Names (Fill with employee names)
+touch names.txt
 
 # copy proxychains config
 cp /etc/proxychains4.conf proxychains.conf && sed -i 's/socks4/socks5/g' proxychains.conf && sed -i 's/9050/1080/g' proxychains.conf

