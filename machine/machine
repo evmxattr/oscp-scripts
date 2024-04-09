@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# Check if the name argument is provided
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <name>"
+    exit 1
+fi
+
+# Get the name from the command line argument
+name=$1
+
+# Create a folder with the given name
+mkdir "$name"
+
+# Change into the created folder
+cd "$name" || exit
+
+# Create subdirectories
+
+mkdir loot
+mkdir tools
+mkdir flags
+mkdir logs
+mkdir access
+mkdir scans
+mkdir exploits
+mkdir screenshots
+
+# Touch files
+touch "$name".md
+touch users.txt
+touch passwords.txt
+touch ntlm.txt
+touch user_ntlm.txt
+touch user_pass.txt
+
+# copy proxychains config
+cp /etc/proxychains4.conf proxychains.conf && sed -i 's/socks4/socks5/g' proxychains.conf && sed -i 's/9050/1080/g' proxychains.conf
+
+# Generate scripts
+echo '#!/bin/bash\n\n# Your access script goes here\n' > access/shell.sh && chmod +x access/shell.sh  
+
+
+echo "Folder structure created for '$name':"
+echo "- $name/"
+find .
+

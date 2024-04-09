@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# Colors
+GREEN='\033[0;32m' # Green
+NC='\033[0m'       # No Color
+
+
+# Make this work for local lab also
+if ip -4 a show tun0 &> /dev/null; then
+    LHOST=$(ip -4 a show tun0 | grep -Po 'inet \K[\d.]+')
+else
+    LHOST=$(ip -4 a show wlan0 | grep -Po 'inet \K[\d.]+')
+fi
+
+
+if [ $# -eq 0 ]
+then
+  TOOLS_PORT=31337
+else
+  TOOLS_PORT=$1
+fi
+
+cat << "EOF"
+  _____              _     _                      
+ |  __ \            (_)   | |                     
+ | |__) |__ _ __ ___ _ ___| |_ ___ _ __   ___ ___ 
+ |  ___/ _ \ '__/ __| / __| __/ _ \ '_ \ / __/ _ \
+ | |  |  __/ |  \__ \ \__ \ ||  __/ | | | (_|  __/
+ |_|   \___|_|  |___/_|___/\__\___|_| |_|\___\___|
+                                                  
+                                                                        
+EOF
+
+#https://patorjk.com/software/taag/#p=display&f=Big&t=Persistence
+
+echo -e "LHOST=${GREEN}$LHOST${NC}"
+echo -e "TOOLS_PORT=${GREEN}$TOOLS_PORT${NC}"
+
+echo ""
+
+echo
+echo '********** Windows **********'
+echo
+
+echo
+echo '********** Linux **********'
+

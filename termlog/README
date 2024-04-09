@@ -1,0 +1,28 @@
+# README
+
+Add `termlog.sh` somewhere e.g `/usr/local/bin/termlog` and `chmod +x` it.
+
+```bash
+
+termlog standalone_1_scanning
+
+Using default logs folder: /data/logs
+Script started, output log file is '/data/logs/2024-04-09-19_55-standalone_1_scanning.log'.
+```
+
+Now all commands get logged to that file.
+
+## Get terminal indicator of logging
+
+Update .zshrc to indicate we are logging terminal output 
+```
+script_precmd() {
+  if [[  "$SCRIPT" ]]; then
+    PROMPT='(%F{%(#.blue.green)}RECORDING%F{reset}%)%F{%(#.blue.green)}──${debian_chroot:+($debian_chroot)─}${VIRTUAL_ENV:+($(basename $VIRTUAL_ENV))─}(%B%F{%(#.red.blue)}%n㉿%m%b%F{%(#.blue.green)})-[%B%F{reset}%(6~.%-1~/…/%4~.%5~)%b%F{%(#.blue.green)}]
+└─%B%(#.%F{red}#.%F{blue}$)%b%F{reset} '
+  fi
+}
+
+precmd_functions+=script_precmd
+
+```
