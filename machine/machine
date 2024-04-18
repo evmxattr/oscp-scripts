@@ -24,7 +24,9 @@ mkdir logs
 mkdir access
 mkdir scans
 mkdir exploits
-mkdir screenshots
+
+mkdir _screenshots
+mkdir _templates
 
 # Touch files
 touch "$name".md
@@ -37,6 +39,9 @@ touch hashes.txt
 
 # Names (Fill with employee names)
 touch names.txt
+
+# copy template(s)
+cp ~/dev/oscp-scripts/templates/* _templates
 
 # copy proxychains config
 cp /etc/proxychains4.conf proxychains.conf && sed -i 's/socks4/socks5/g' proxychains.conf && sed -i 's/9050/1080/g' proxychains.conf

