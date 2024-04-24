@@ -54,3 +54,5 @@ echo "Folder structure created for '$name':"
 echo "- $name/"
 find .
 
+termlog recon
+

