@@ -16,17 +16,22 @@ mkdir "$name"
 cd "$name" || exit
 
 # Create subdirectories
-
 mkdir loot
 mkdir tools
 mkdir flags
+mkdir hashes
 mkdir logs
 mkdir access
 mkdir scans
 mkdir exploits
 
-mkdir _screenshots
-mkdir _templates
+# Enumeration
+mkdir -p enum/{external,internal}
+
+# Create placeholders
+touch enum/external/80-http.md
+touch enum/external/445-smb.md
+
 
 # Touch files
 touch "$name".md
@@ -40,6 +45,16 @@ touch hashes.txt
 # Names (Fill with employee names)
 touch names.txt
 
+# Create screenshot and template dirs
+mkdir _screenshots
+mkdir _templates
+mkdir .obsidian
+
+
+# Setup obsidian templates and files directory
+echo '{"folder": "_templates"}' | jq . > .obsidian/templates.json
+echo '{"attachmentFolderPath": "_screenshots"}' | jq . > .obsidian/app.json 
+
 # copy template(s)
 cp ~/dev/oscp-scripts/templates/* _templates
 
@@ -47,7 +62,7 @@ cp ~/dev/oscp-scripts/templates/* _templates
 cp /etc/proxychains4.conf proxychains.conf && sed -i 's/socks4/socks5/g' proxychains.conf && sed -i 's/9050/1080/g' proxychains.conf
 
 # Generate scripts
-echo '#!/bin/bash\n\n# Your access script goes here\n' > access/shell.sh && chmod +x access/shell.sh  
+echo '#!/bin/bash' > access/shell.sh && chmod +x access/shell.sh  
 
 
 echo "Folder structure created for '$name':"
