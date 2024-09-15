@@ -35,6 +35,7 @@ touch enum/external/445-smb.md
 
 # Touch files
 touch "$name".md
+touch Exploit.md
 touch users.txt
 touch passwords.txt
 touch ntlm.txt
