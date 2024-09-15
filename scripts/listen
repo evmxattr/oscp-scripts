@@ -7,4 +7,4 @@ RESET='\033[0m'
 # Set default port to 5555 if no argument provided
 port=${1:-5555}
 
-nc -nlvp "$port"
+rlwrap nc -nlvp "$port"

