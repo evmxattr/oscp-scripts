@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Get the IP address of the tun interface
+#ip_address=$(ip addr show dev tun0 | awk '/inet / {print $2}' 2> /dev/null)
+ip_address=$(ip addr show dev tun0 2>/dev/null | grep -oP 'inet \K[\d.]+')
+
+# Extract only the IP address from the output
+ip_address=${ip_address%%/*}
+
+echo "$ip_address"
