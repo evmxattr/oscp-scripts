@@ -1,5 +1,12 @@
 #!/bin/zsh
 
+# /usr/bin/script --timing=timingfile -a -f commands.log
+# scriptreplay timingfile commands.log
+# scriptreplay_ng -a 3 2024-09-15-21_45-privesc_windows.log
+
+# cat commands.log | sed 's/\x1b\[[0-9;]*m//g'
+# cat commands.log | col -b
+
 LOG_FOLDER="./logs"
 
 if [ "$SCRIPT" ]; then
